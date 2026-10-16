@@ -137,7 +137,7 @@ test('customer carousel shows four original prints, advances and opens full imag
   await page.getByRole('button', { name: 'Próximas fotos', exact: true }).click();
   await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBeGreaterThan(200);
   await page.getByRole('button', { name: 'Ampliar: Regata de poá', exact: false }).click();
-  await expect(page.getByRole('dialog').locator('img')).toHaveAttribute('src', '/clientes/cliente-poa.jpg');
+  await expect(page.getByRole('dialog').locator('img')).toHaveAttribute('src', /cliente-poa.*\.jpg$/);
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

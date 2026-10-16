@@ -27,7 +27,7 @@ Importe o repositório com preset **Vite**, instalação `npm ci`, build `npm ru
 - `joWhatsappUrl`: contato direto verificado da Jô. Enquanto vazio, oferece pedir atendimento dela pelo WhatsApp da loja.
 - `joPhoto`: fotografia autorizada. Enquanto vazio, aparece um placeholder identificado.
 - O hero usa a fotografia real da fachada enviada pela proprietária, em `public/images/valentina-fachada.jpg`.
-- A seção de prova social usa os quatro prints enviados pela proprietária: `cliente-palco.jpg`, `cliente-poa.jpg`, `cliente-azul.jpg` e `cliente-rosa.jpg`, em `public/clientes/`. Os arquivos são preservados completos, com swipe, arraste, setas e ampliação em modal. Não há avaliações inventadas.
+- A seção de prova social usa os quatro prints enviados pela proprietária: `cliente-palco.jpg`, `cliente-poa.jpg`, `cliente-azul.jpg` e `cliente-rosa.jpg`, em `src/assets/clientes/`. Os arquivos são preservados completos, com swipe, arraste, setas e ampliação em modal. Não há avaliações inventadas.
 - Para trocar ou adicionar histórias, atualize `entries` em `src/SocialProof.tsx` e recompile. Fotos reais de bastidores e retrato individual da Jô continuam pendentes. As demais fotografias editoriais de referência têm origem em `public/images/ATTRIBUTION.md`.
 
 ## Design e desempenho
