@@ -1,153 +1,86 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight, ArrowRight, ArrowDown, Menu, X, Sparkles, Box } from 'lucide-react';
-import Lenis from 'lenis';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowDown, ArrowUpRight, ArrowLeft, ArrowRight, Menu, MessageCircle, Sparkles } from 'lucide-react';
 import '@fontsource/cormorant-garamond/latin-400.css';
 import '@fontsource/cormorant-garamond/latin-400-italic.css';
 import '@fontsource/cormorant-garamond/latin-600.css';
 import '@fontsource/dm-sans/latin-400.css';
 import '@fontsource/dm-sans/latin-500.css';
 import '@fontsource/dm-sans/latin-600.css';
-import './style.css';
 import './brand.css';
+import './style.css';
+import BrandLogo from './components/BrandLogo';
+import LazySculpture from './components/LazySculpture';
+import Dialog from './components/Dialog';
+import Cursor from './components/Cursor';
+import { VIPGroup, SalespersonJo } from './components/Community';
+import Catalog from './components/Catalog';
 import SocialProof from './SocialProof';
-
-const Closet = lazy(() => import('./scene'));
-gsap.registerPlugin(ScrollTrigger);
-const whatsapp = 'https://wa.me/5547996420364';
-function BrandLogo() {
-  return <a className="brand-logo" href="#inicio" aria-label="Valentina Closet início">
-    <svg className="brand-mark" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M31 23c-6-4-3-13 3-12 7 1 7 7 3 12l-4 7c-1 2-1 4 1 5 3 2 6-1 5-4-1-3-4-3-7 0l-4 5c-5 5-13 7-20 10-5 2-5 7 1 7h44c5 0 6-4 2-6L39 38" />
-    </svg>
-    <span className="wordmark brand-name">VALENTINA<span>C L O S E T</span></span>
-  </a>;
-}
-const projects = [
-  { name: 'Essência urbana', category: 'Alfaiataria & atitude', image: '/images/look-1.jpg', detail: 'Uma exploração de linhas, contrastes e personalidade. A alfaiataria encontra a liberdade do dia a dia em um editorial sobre presença.', mood: 'Estrutura · Contraste · Confiança' },
-  { name: 'O movimento de ser', category: 'Fluidez & expressão', image: '/images/look-2.jpg', detail: 'Cor, fluidez e movimento. Uma direção visual que celebra a liberdade de experimentar novas versões de si mesma.', mood: 'Cor · Leveza · Movimento' },
-  { name: 'Entre texturas', category: 'Textura & naturalidade', image: '/images/look-3.jpg', detail: 'Superfícies que convidam a olhar de perto. Uma composição de volumes e texturas que traduz conforto em expressão pessoal.', mood: 'Textura · Volume · Liberdade' },
-  { name: 'Naturalmente você', category: 'Identidade & delicadeza', image: '/images/look-4.jpg', detail: 'O encontro entre delicadeza e identidade. Um estudo editorial de tons suaves e combinações que deixam a personalidade aparecer.', mood: 'Naturalidade · Suavidade · Identidade' },
-];
-
-class SceneBoundary extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() { return { failed: true }; }
-  render() { return this.state.failed ? <div className="scene-placeholder">Explore o universo Valentina pelos editoriais abaixo. O 3D não está disponível neste dispositivo.</div> : this.props.children; }
-}
+import { NewCollection, HumanExperience, InstagramEditorial, VisitAndDelivery } from './components/StoreSections';
+import { useEditorialDrag } from './hooks/useEditorialDrag';
+import { useCampaignMotion } from './hooks/useCampaignMotion';
+import { concepts, instagram, looks, whatsapp, store } from './data';
 
 function App() {
-  const reduced = useReducedMotion();
+  const reduced = !!useReducedMotion();
   const [menu, setMenu] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
-  const [scene, setScene] = useState(false);
-  const [active, setActive] = useState(0);
-  const horizontal = useRef<HTMLDivElement>(null);
-  const trigger = useRef<HTMLElement | null>(null);
-  const dialog = useRef<HTMLDivElement>(null);
-
-  // Load the desktop experience after the page settles; mobile activates it on request.
-  useEffect(() => {
-    if (reduced || !matchMedia('(min-width: 1000px)').matches) return;
-    const timer = window.setTimeout(() => setScene(true), 1200);
-    return () => clearTimeout(timer);
-  }, [reduced]);
-
-  useEffect(() => {
-    if (reduced) return;
-    const lenis = new Lenis({ smoothWheel: true, anchors: true });
-    lenis.on('scroll', ScrollTrigger.update);
-    const tick = (t: number) => lenis.raf(t * 1000);
-    gsap.ticker.add(tick);
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach(el => gsap.from(el, { y: 32, opacity: 0, duration: .85, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 92%', once: true } }));
-      gsap.to('.portfolio-backdrop', { yPercent: 22, ease: 'none', scrollTrigger: { trigger: '.portfolio-hero', start: 'top top', end: 'bottom top', scrub: true } });
-      const mm = gsap.matchMedia();
-      mm.add('(min-width: 1000px)', () => {
-        if (horizontal.current) gsap.to(horizontal.current, { x: () => -Math.max(0, horizontal.current!.scrollWidth - horizontal.current!.clientWidth), ease: 'none', scrollTrigger: { trigger: '.editorial', start: 'top top', end: '+=900', pin: true, scrub: 1, invalidateOnRefresh: true } });
-      });
-    });
-    return () => { ctx.revert(); gsap.ticker.remove(tick); lenis.destroy(); };
-  }, [reduced]);
-
-  useEffect(() => {
-    if (!menu && selected === null) return;
-    document.body.style.overflow = 'hidden';
-    const frame = requestAnimationFrame(() => dialog.current?.querySelector<HTMLElement>('button, a[href]')?.focus());
-    const key = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setMenu(false); setSelected(null); }
-      if (e.key === 'Tab') {
-        const targets = dialog.current?.querySelectorAll<HTMLElement>('button, a[href]');
-        if (!targets?.length) return;
-        const first = targets[0], last = targets[targets.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-    };
-    window.addEventListener('keydown', key);
-    return () => { cancelAnimationFrame(frame); document.body.style.overflow = ''; window.removeEventListener('keydown', key); trigger.current?.focus({ preventScroll: true }); };
-  }, [menu, selected]);
-
-  useEffect(() => { const frame = requestAnimationFrame(() => ScrollTrigger.refresh()); return () => cancelAnimationFrame(frame); }, [scene]);
-  const openProject = (i: number, el: HTMLElement) => { trigger.current = el; setSelected(i); };
-
+  useCampaignMotion(reduced);
+  useEditorialDrag();
+  const openLook = (index: number) => setSelected(index);
   return <>
-    <div className="announcement">VALENTINA CLOSET <span>A MODA se transforma</span></div>
-    <header>
-      <BrandLogo />
-      <nav aria-label="Navegação principal"><a href="#inicio">Universo 3D <span className="tiny-badge">EXPLORE</span></a><a href="#editoriais">Editoriais</a><a href="#essencia">A marca</a></nav>
-      <div className="header-actions"><a className="header-cta" href="#contato">Vamos conversar <ArrowUpRight size={14} /></a><button className="menu-button" onClick={e => { trigger.current = e.currentTarget; setMenu(true); }} aria-label="Abrir menu"><Menu /></button></div>
-    </header>
-
+    <a className="skip-link" href="#manifesto">Ir para o conteúdo</a>
+    <header className="site-header"><BrandLogo /><nav aria-label="Navegação principal"><a href="#inicio" data-magnetic>Início</a><a href="#loja" data-magnetic>Localização</a><a href="#looks" data-magnetic>Looks</a><a href="#catalogo" data-magnetic>Catálogo</a><a href="#clientes" data-magnetic>Clientes</a><a href="#vip" data-magnetic>Grupo VIP</a><a href="#contato" data-magnetic>Contato</a></nav><a className="header-contact" href={whatsapp} target="_blank" rel="noopener noreferrer" data-magnetic>Conversar pelo WhatsApp <ArrowUpRight size={15} /></a><button className="menu-button" aria-label="Abrir menu" onClick={() => setMenu(true)}><Menu size={23} /></button></header>
     <main>
-      <section className="portfolio-hero" id="inicio" aria-labelledby="hero-title">
-        <div className="portfolio-hero-copy">
-          <div className="eyebrow"><i /> MODA, SOB UMA NOVA PERSPECTIVA</div>
-          <h1 id="hero-title">Vista sua<br /><em>dimensão.</em></h1>
-          <p>Um olhar sobre moda, identidade e movimento.<br />Entre no universo criativo da Valentina Closet.</p>
-          <a href="#editoriais" className="button dark">Explore os editoriais <ArrowUpRight size={19} /></a>
-          <div className="hero-bottom"><span className="small-star" aria-hidden="true"><Sparkles size={29} strokeWidth={1.2} /></span><span>Um universo de possibilidades.<br /><b>Uma essência que é só sua.</b></span><a href="#editoriais" className="scroll-link" aria-label="Descer para os editoriais"><ArrowDown size={18} /></a></div>
-        </div>
-        <div className="portfolio-stage">
-          <span className="portfolio-backdrop" aria-hidden="true">V.</span>
-          <span className="stage-label">01 / UNIVERSO VALENTINA</span>
-          {scene ? <SceneBoundary><Suspense fallback={<div className="scene-placeholder">Abrindo uma nova dimensão…</div>}><Closet color={active} sectionId="inicio" /></Suspense></SceneBoundary> : <button className="scene-launch" onClick={() => setScene(true)}><div className="closet-illustration"><span /><span /><span /></div><span className="round-play"><Box size={25} /></span><strong>Explore o universo 3D</strong><span>Toque para entrar</span></button>}
-          <div className="stage-caption"><span>Formas que flutuam.<br /><em>Estilo que permanece.</em></span><span className="stage-number">V / 001</span></div>
-          <div className="stage-controls" aria-label="Paleta do universo 3D">{['Pink', 'Blush', 'Ameixa'].map((color, i) => <button aria-label={`Paleta ${color}`} aria-pressed={active === i} className={active === i ? 'chosen' : ''} onClick={() => setActive(i)} key={color}><i style={{ background: ['#f5008b', '#f765bd', '#790044'][i] }} /><span>{color}</span></button>)}</div>
-        </div>
-        <div className="portfolio-hero-foot"><span>PORTFÓLIO DE MODA & IDENTIDADE</span><span>{scene ? 'Role para mover a perspectiva' : 'Uma experiência para descobrir no seu ritmo'} <ArrowDown size={12} /></span></div>
+      <section className="campaign-hero" id="inicio" aria-labelledby="hero-title">
+        <div className="hero-topline"><span>MODA FEMININA MODERNA E ACESSÍVEL.</span><span>BLUMENAU / ENVIAMOS PARA TODO O BRASIL.</span></div>
+        <h1 id="hero-title" className="hero-title"><span className="hero-title-first">A moda</span><span className="hero-title-last">te<br /><em>transforma.</em></span></h1>
+        <div className="hero-portrait-anchor"><div className="hero-portrait" data-tilt><img src="/images/valentina-fachada.jpg" alt="Mulher em frente à Valentina Closet, com a fachada e a vitrine da loja ao fundo" fetchPriority="high" width="1280" height="960" /><span className="photo-index">VALENTINA CLOSET / BLUMENAU</span></div></div>
+        <span className="hero-echo" aria-hidden="true">V</span><span className="hero-brand-stamp">VALENTINA / CLOSET</span>
+        <LazySculpture reduced={reduced} />
+        <div className="hero-note"><p>A qualidade que você procura,<br />que cabe no seu bolso.</p><small>Descubra uma nova forma de expressar quem você é.</small></div>
+        <div className="hero-actions"><a className="hero-explore" href="#manifesto" data-magnetic><span>Conheça a Valentina Closet</span><ArrowDown size={18} /></a></div>
+        <div className="hero-bottomline"><span>MODA DE VERDADE, PARA A VIDA REAL.</span><span>DESCUBRA A VALENTINA <span aria-hidden="true">↓</span></span></div>
       </section>
 
-      <div className="marquee" aria-hidden="true"><span>MODA COMO EXPRESSÃO</span><i><Sparkles size={24} strokeWidth={1.2} /></i><span>IDENTIDADE EM MOVIMENTO</span><i><Sparkles size={24} strokeWidth={1.2} /></i><span>O UNIVERSO VALENTINA</span><i><Sparkles size={24} strokeWidth={1.2} /></i></div>
-
-      <section className="portfolio-projects section" id="editoriais">
-        <div className="section-top" data-reveal><div><div className="eyebrow">02 / OLHARES SELECIONADOS</div><h2>Além do look.<br /><em>Uma história.</em></h2></div><p>Um portfólio de formas, texturas e atitudes.<br />Explore as inspirações que traduzem nosso universo.</p></div>
-        <div className="project-grid">{projects.map((project, i) => <motion.article key={project.name} className="project-card" whileHover={reduced ? undefined : { y: -6 }}>
-          <button className="project-cover" onClick={e => openProject(i, e.currentTarget)} aria-label={`Explorar editorial ${project.name}`}><img src={project.image} alt={`Referência editorial: ${project.name}`} loading="lazy" /><span className="project-cover-number">0{i + 1}</span><span className="project-open"><ArrowUpRight size={22} /></span><span className="project-cover-caption">VER EDITORIAL</span></button>
-          <div className="project-heading"><div><p>{project.category}</p><h3><button onClick={e => openProject(i, e.currentTarget)}>{project.name}</button></h3></div><span>0{i + 1} / 04</span></div>
-        </motion.article>)}</div>
-        <p className="editorial-note">Estudos visuais com imagens editoriais de referência.</p>
+      <NewCollection reduced={reduced} />
+      <Catalog />
+      <section className="manifesto" id="manifesto" aria-labelledby="manifesto-title">
+        <div className="section-kicker"><span>02 / O NOSSO JEITO DE VER A MODA</span><span>FEITO PARA SENTIR.</span></div>
+        <div className="manifesto-composition"><h2 id="manifesto-title"><span className="manifesto-line"><span className="manifesto-word">NÃO É SÓ</span></span><span className="manifesto-line"><span className="manifesto-word">SOBRE ROUPA.</span></span><span className="manifesto-line manifesto-front"><span className="manifesto-word">É SOBRE</span> <em className="manifesto-word">como</em></span><span className="manifesto-line manifesto-front"><em className="manifesto-word">você se sente.</em></span></h2><figure className="manifesto-photo"><img src="/images/look-2.jpg" alt="Estudo de movimento em vestido estampado" loading="lazy" width="370" height="390" /><figcaption>EXPRESSÃO, SEM PEDIR LICENÇA.</figcaption></figure></div>
+        <div className="manifesto-footer"><span className="small-cross" aria-hidden="true">+</span><p>Acreditamos na moda que desperta algo.<br />No detalhe que muda o dia. Na liberdade de ser<br />muitas — e continuar sendo você.</p><a href="#looks" className="text-link" data-magnetic>Entre nessa história <ArrowUpRight size={18} /></a></div>
       </section>
 
-      <section className="editorial" aria-label="Narrativa visual em movimento"><div className="editorial-track" ref={horizontal}>
-        <div className="editorial-intro"><div className="eyebrow">03 / UM UNIVERSO EM MOVIMENTO</div><h2>Não é só<br />sobre vestir.<br /><em>É sobre ser.</em></h2><p>Uma narrativa para percorrer no seu ritmo.</p><ArrowRight size={28} /></div>
-        <div className="story-card"><img src="/images/look-3.jpg" alt="Estudo de texturas e movimento" loading="lazy" /><div><span>01 / TEXTURA</span><h3>O detalhe<br />muda tudo.</h3></div></div>
-        <div className="story-card"><img src="/images/look-1.jpg" alt="Estudo de alfaiataria e identidade" loading="lazy" /><div><span>02 / PRESENÇA</span><h3>Uma identidade<br />que se move.</h3></div></div>
-        <div className="editorial-end"><Sparkles size={32} /><h3>A sua essência.<br />Em cada dimensão.</h3><a href="#essencia">Conheça a marca <ArrowUpRight size={17} /></a></div>
-      </div></section>
+      <section className="runway" id="looks" aria-label="Passarela de editoriais">
+        <div className="runway-heading"><span>Cada look para cada personalidade.</span><span>Seu estilo conta uma história. Qual é a sua?</span></div>
+        <div className="runway-track">{looks.map((look, i) => <article className={`look-panel look-panel-${i}`} key={look.name}>
+          <span className="look-background-word" aria-hidden="true">{['PRESENÇA', 'LIBERDADE', 'TEXTURA', 'ESSÊNCIA', 'OLHAR'][i]}</span>
+          <span className="look-number">0{i + 1}<small>/ 05</small></span>
+          <button className="look-image-button" aria-label={`Ver editorial ${look.name}`} onClick={() => openLook(i)} data-view><img className="look-photo" src={look.image} alt={look.name} loading="lazy" width={i === 3 || i === 4 ? 1020 : 370} height={i === 3 || i === 4 ? 700 : 390} /><span className="look-open"><ArrowUpRight size={28} /></span></button>
+          <div className="look-caption"><span>{look.category}</span><h2>{look.name}</h2><p>{look.line}</p><button className="text-link" onClick={() => openLook(i)} data-magnetic>Ver detalhes <ArrowUpRight size={17} /></button></div>
+        </article>)}</div>
+        <div className="runway-foot"><span>CINCO FORMAS DE SENTIR.</span><span className="runway-desktop-hint">CONTINUE ROLANDO <ArrowRight size={17} /></span><span className="runway-mobile-hint">DESLIZE PARA EXPLORAR <ArrowRight size={17} /></span></div>
+      </section>
 
-      <section id="essencia" className="essence section"><div className="essence-image" data-reveal><img src="/images/closet.jpg" alt="Referência visual de curadoria de roupas" loading="lazy" /><span>O OLHAR VALENTINA.</span></div><div data-reveal><div className="eyebrow">04 / A MARCA</div><h2>Uma essência.<br /><em>Infinitas versões.</em></h2><p>Acreditamos na moda como expressão de identidade. Nas texturas que despertam sensações. No movimento que transforma um look em presença.</p><p>Este é o nosso portfólio: um espaço para compartilhar o olhar Valentina e explorar novas possibilidades de estilo.</p><a className="text-link" href="#contato">Entre no nosso universo <ArrowUpRight size={18} /></a></div></section>
-      <SocialProof />
-      <section className="closing portfolio-contact" id="contato"><span className="eyebrow">05 / VAMOS CRIAR CONEXÕES</span><h2>O próximo capítulo<br /><em>começa com uma conversa.</em></h2><p>Para conhecer a marca, compartilhar uma ideia<br />ou encontrar novas possibilidades.</p><a href={whatsapp} target="_blank" rel="noopener noreferrer" className="button dark">Converse com a Valentina <ArrowUpRight size={18} /></a><a className="brand-social" href="https://www.instagram.com/valentinaclosetloja/" target="_blank" rel="noopener noreferrer">@valentinaclosetloja <ArrowUpRight size={14} /></a></section>
+      <section className="art-bridge" aria-label="Escultura digital de seda"><span className="bridge-orbit" aria-hidden="true" /><LazySculpture variant="bridge" reduced={reduced} /><div className="art-bridge-copy"><span>ENTRE A FORMA E O SENTIR</span><p>Há um universo<br /><em>em cada detalhe.</em></p></div><span className="bridge-footnote">ESTUDO DE FORMA / SEDA EM MOVIMENTO</span></section>
+
+      <section className="concepts" id="universo" aria-labelledby="concepts-title"><h2 id="concepts-title" className="sr-only">O universo Valentina em quatro conceitos</h2><div className="concepts-stage">{concepts.map((concept, i) => <article className="concept-frame" key={concept.title}><div className="concept-photo"><img src={concept.image} alt={`Editorial sobre ${concept.title.toLowerCase()}`} loading="lazy" /><span>O UNIVERSO VALENTINA / 0{i + 1}</span></div><div className="concept-copy"><span className="concept-index">0{i + 1}<small>/ 04</small></span><span className="eyebrow">O NOSSO JEITO DE SER</span><h3>{concept.title}</h3><em>{concept.subtitle}</em><p>{concept.copy}</p><div className="concept-dots" aria-hidden="true">{concepts.map((_, j) => <i key={j} className={j === i ? 'active' : ''} />)}</div></div></article>)}</div></section>
+
+      <section className="art-gallery" aria-labelledby="gallery-title"><div className="section-kicker"><span>FRAGMENTOS DO NOSSO UNIVERSO</span><span>UM MOODBOARD VIVO.</span></div><h2 id="gallery-title">SEJA TODAS<br /><em>as suas versões.</em></h2><div className="gallery-composition">{[2, 0, 3, 1, 4].map((index, i) => <figure className={`gallery-piece gallery-piece-${i}`} key={index}><motion.button whileHover={reduced ? undefined : { scale: 1.025 }} transition={{ duration: .35 }} data-view aria-label={`Explorar ${looks[index].name}`} onClick={() => openLook(index)}><img src={looks[index].image} alt={looks[index].name} loading="lazy" /></motion.button><figcaption><span>0{i + 1}</span>{looks[index].mood}</figcaption></figure>)}<div className="gallery-annotation"><Sparkles size={35} strokeWidth={.8} /><span>O EXTRAORDINÁRIO<br />ESTÁ EM VOCÊ.</span></div></div><p className="reference-note">Composições com fotografias editoriais de referência.</p></section>
+
+      <div className="type-interlude" aria-hidden="true">{[0, 1].map(row => <div className={`ticker-row ticker-row-${row}`} key={row}><div className="ticker-track">{[0, 1].map(copy => <span key={copy}>VALENTINA CLOSET <i>✳︎</i> A MODA SE TRANSFORMA <i>✳︎</i> </span>)}</div></div>)}</div>
+      <HumanExperience />
+      <SocialProof /><VIPGroup /><SalespersonJo />
+      <InstagramEditorial />
+      <VisitAndDelivery />
+      <section className="campaign-contact" id="contato"><div className="section-kicker"><span>O PRÓXIMO LOOK COMEÇA COM UMA CONVERSA</span><a href={instagram} target="_blank" rel="noopener noreferrer">@VALENTINACLOSETLOJA <ArrowUpRight size={15} /></a></div><p>Gostou de algum estilo ou quer conhecer as novidades?</p><h2>Vamos<br /><em>conversar?</em></h2><a className="contact-orb" href={whatsapp} target="_blank" rel="noopener noreferrer" data-magnetic><MessageCircle size={27} strokeWidth={1.3} /><span>Conversar pelo<br />WhatsApp</span></a><div className="contact-bottom"><span>MODA PARA EXPRESSAR QUEM VOCÊ É.</span><span>DE BLUMENAU PARA TODO O BRASIL.</span></div></section>
     </main>
-    <footer><BrandLogo /><p>A MODA se transforma.</p><span>© {new Date().getFullYear()} Valentina Closet</span><a href={whatsapp} target="_blank" rel="noopener noreferrer" aria-label="Conversar no WhatsApp"><ArrowUpRight size={19} /></a></footer>
-
-    <AnimatePresence>{menu && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : .2 }} className="overlay"><div ref={dialog} className="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu"><button className="close" onClick={() => setMenu(false)} aria-label="Fechar menu"><X /></button>{[['Universo 3D', 'inicio'], ['Editoriais', 'editoriais'], ['A marca', 'essencia'], ['Contato', 'contato']].map(([text, id]) => <a key={id} href={`#${id}`} onClick={() => setMenu(false)}>{text}<ArrowUpRight /></a>)}</div></motion.div>}
-      {selected !== null && <motion.div className="overlay modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : .2 }} onClick={() => setSelected(null)}><div ref={dialog} className="look-modal" role="dialog" aria-modal="true" aria-labelledby="editorial-title" onClick={e => e.stopPropagation()}><button className="close" onClick={() => setSelected(null)} aria-label="Fechar editorial"><X /></button><img src={projects[selected].image} alt={projects[selected].name} /><div className="look-details"><div className="eyebrow">EDITORIAL / 0{selected + 1}</div><h2 id="editorial-title">{projects[selected].name}</h2><p>{projects[selected].detail}</p><div className="editorial-mood">{projects[selected].mood}</div><p className="editorial-note">Estudo visual com fotografia de referência.</p><a className="text-link" href={`${whatsapp}?text=${encodeURIComponent(`Olá! Conheci o editorial “${projects[selected].name}” no portfólio da Valentina e gostaria de conversar.`)}`} target="_blank" rel="noopener noreferrer">Vamos conversar <ArrowUpRight size={17} /></a><div className="project-pagination"><button onClick={() => setSelected((selected + projects.length - 1) % projects.length)} aria-label="Editorial anterior">← Anterior</button><span>0{selected + 1} / 04</span><button onClick={() => setSelected((selected + 1) % projects.length)} aria-label="Próximo editorial">Próximo →</button></div></div></div></motion.div>}
-    </AnimatePresence>
+    <footer className="store-footer"><div className="footer-brand"><BrandLogo /><p>Moda feminina moderna e acessível.</p><span>Blumenau — SC</span></div><nav aria-label="Navegação do rodapé">{[['Início', '#inicio'], ['Novidades', '#novidades'], ['Looks', '#looks'], ['Catálogo', '#catalogo'], ['Localização', '#loja'], ['Grupo VIP', '#vip'], ['Falar com a Jô', '#jo']].map(([label, href]) => <a key={href} href={href}>{label}</a>)}</nav><div className="footer-social"><a href={instagram} target="_blank" rel="noopener noreferrer">Instagram <ArrowUpRight size={14} /></a><a href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp <ArrowUpRight size={14} /></a><a href={store.linktree} target="_blank" rel="noopener noreferrer">linktr.ee/valentinaclosetloja <ArrowUpRight size={14} /></a></div><div className="footer-bottom"><span>© {new Date().getFullYear()} VALENTINA CLOSET</span><span>A MODA SE TRANSFORMA.</span><a href="#inicio" aria-label="Voltar ao início">VOLTAR AO TOPO ↑</a></div></footer>
+    <a className="floating-whatsapp" href={whatsapp} target="_blank" rel="noopener noreferrer" aria-label="Conversar pelo WhatsApp da Valentina Closet"><MessageCircle size={23} /><span>Vamos encontrar seu look?</span></a>
+    <Cursor reduced={reduced} />
+    {menu && <Dialog label="Menu" onClose={() => setMenu(false)} className="menu-dialog"><span className="eyebrow">EXPLORE O UNIVERSO</span>{[['Início', 'inicio'], ['Localização', 'loja'], ['Looks', 'looks'], ['Catálogo', 'catalogo'], ['Clientes', 'clientes'], ['Grupo VIP', 'vip'], ['Contato', 'contato']].map(([label, id], i) => <a key={id} href={`#${id}`} onClick={() => setMenu(false)}><small>0{i + 1}</small>{label}<ArrowUpRight size={23} /></a>)}</Dialog>}
+    {selected !== null && <Dialog label={`Editorial ${looks[selected].name}`} onClose={() => setSelected(null)} className="editorial-dialog"><img className="dialog-photo" src={looks[selected].image} alt={looks[selected].name} /><div className="dialog-copy"><span className="eyebrow">EDITORIAL / 0{selected + 1}</span><h2>{looks[selected].name}</h2><p>{looks[selected].description}</p><span className="editorial-mood">{looks[selected].mood}</span><p className="reference-note">Estudo visual com fotografia de referência.</p><a className="text-link" href={`${whatsapp}?text=${encodeURIComponent(`Olá! Conheci o editorial “${looks[selected].name}” no portfólio da Valentina e gostaria de conversar.`)}`} target="_blank" rel="noopener noreferrer">Vamos conversar <ArrowUpRight size={18} /></a><div className="dialog-pagination"><button aria-label="Editorial anterior" onClick={() => setSelected((selected + looks.length - 1) % looks.length)}><ArrowLeft size={18} /> Anterior</button><span>0{selected + 1} / 05</span><button aria-label="Próximo editorial" onClick={() => setSelected((selected + 1) % looks.length)}>Próximo <ArrowRight size={18} /></button></div></div></Dialog>}
   </>;
 }
-createRoot(document.getElementById('root')!).render(<React.StrictMode><App /></React.StrictMode>);
+createRoot(document.getElementById('root')!).render(<App />);

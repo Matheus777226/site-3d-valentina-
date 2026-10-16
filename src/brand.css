@@ -1,72 +1,13 @@
-/* Valentina Closet — palette inspired by the supplied brand reference. */
-:root{--brand:#f5008b;--brand-deep:#790044;--brand-action:#bd006b;--brand-soft:#ffecf6;--brand-blush:#f765bd;--paper:#fff;--ink:#40172f;--muted:#795768;--line:#f0d7e5;color:var(--ink);background:var(--paper)}
-body{background:var(--paper)}
-button:focus-visible,a:focus-visible{outline-color:var(--brand-deep)}
-.announcement{background:var(--brand-deep);color:#fff}
-header{background:#fff}
-.wordmark{color:var(--brand-deep)}
-.brand-logo{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.brand-mark{width:45px;height:45px;display:block;flex-shrink:0;background:var(--brand);border-radius:50%;padding:6px;color:#fff;border:1px solid #f765bd}
-.brand-name{font-size:24px;letter-spacing:2px}
-.brand-name>span{color:var(--brand-action)}
-nav a:hover,.header-cta:hover{color:var(--brand-action)}
-.header-cta{border-color:#d174a9;color:var(--brand-deep)}
-.tiny-badge{background:var(--brand-soft);color:var(--brand-action)}
-.portfolio-hero{background:var(--brand)}
-.portfolio-hero-copy h1,.portfolio-hero-copy h1 em{color:#fff}
-.portfolio-hero-copy .eyebrow,.portfolio-hero-copy>p{color:#51002e}
-.portfolio-hero-copy .eyebrow i{background:#fff}
-.portfolio-hero .hero-bottom,.portfolio-hero .hero-bottom b{color:#51002e}
-.portfolio-hero .small-star{color:#fff}
-.portfolio-hero .scroll-link{border-color:#7900446b;color:#51002e}
-.portfolio-hero .button{background:#fff;color:var(--brand-deep);box-shadow:0 7px 25px #79004414}
-.portfolio-hero .button:hover{background:var(--brand-soft)}
-.portfolio-hero-foot,.portfolio-hero-foot>span:last-child{color:#51002e}
-.portfolio-stage{background:radial-gradient(ellipse at 50% 42%,#fff8fc,#ffc6e5);border:1px solid #ffffff5e}
-.portfolio-backdrop{color:#f5008b14}
-.stage-label,.stage-caption,.stage-number{color:var(--brand-deep)}
-.stage-controls button{color:#790044}
-.stage-controls i{border-color:#79004440}
-.stage-controls .chosen{border-color:var(--brand-deep)}
-.round-play{background:#ffffffcb;border-color:#fff;color:var(--brand-action)}
-.scene-launch strong{color:var(--brand-deep)}
-.scene-launch>span:last-child{color:#8f1b5f}
-.scene-placeholder{color:var(--brand-deep);padding:35px;text-align:center}
-.closet-illustration span{background:linear-gradient(100deg,#f66dbb,#f5008b,#ffc0e3)}
-.closet-illustration span:nth-child(2){background:linear-gradient(100deg,#fff0f9,#f9b9dd,#ffedf7)}
-.closet-illustration span:nth-child(3){background:linear-gradient(100deg,#b50066,#d4328e,#f38fc8)}
-.marquee{background:var(--brand-deep);color:#fff;border-color:var(--brand-deep)}
-.marquee i{color:#ff9ed5}
-.eyebrow{color:var(--brand-action)}
-h2 em{color:var(--brand-action)}
-.dark{background:var(--brand-action);color:#fff}
-.dark:hover{background:var(--brand-deep)}
-.project-cover{background:var(--brand-soft)}
-.project-cover:after{background:linear-gradient(transparent,#4b002e80)}
-.project-open{background:#79004436}
-.project-heading p,.project-heading>span,.project-pagination>span{color:#8b476c}
-.project-heading h3 button:hover{color:var(--brand-action)}
-.editorial-note{color:#88506f}
-.editorial{background:var(--brand-soft)}
-.editorial-end>svg{color:var(--brand-action)}
-.editorial-end>a,.text-link{color:var(--brand-action);border-color:#d17cae}
-.story-card:after{background:linear-gradient(transparent,#4b002e9c)}
-.essence-image span{background:#790044d9;padding:9px 12px}
-.closing{background:var(--brand)}
-.closing .eyebrow,.closing>p{color:#51002e}
-.closing h2,.closing h2 em{color:#fff}
-.closing .button{background:#fff;color:var(--brand-deep)}
-.closing .button:hover{background:var(--brand-soft)}
-footer{background:#fff7fb}
-footer>span,footer>a:last-child{color:#8b476c}
-.social-proof{background:#fff7fb}
-.social-proof>.eyebrow,.social-card strong{color:var(--brand-action)}
-.social-card{border-color:var(--line)}
-.look-modal,.mobile-menu{background:#fff}
-.look-modal .close,.mobile-menu .close{background:var(--brand-soft);color:var(--brand-deep)}
-.editorial-mood{color:var(--brand-deep)}
-.project-pagination button:hover{color:var(--brand-action)}
-.brand-social{display:inline-flex;gap:9px;align-items:center;color:var(--brand-deep);font-size:11px;margin-top:22px;border-bottom:1px solid #d174a9;padding-bottom:7px}
-@media(max-width:767px){.brand-logo{gap:9px}.brand-mark{width:37px;height:37px;padding:5px}.brand-name{font-size:20px;letter-spacing:1.7px}.brand-name>span{font-size:6px;letter-spacing:4px}.portfolio-stage{border-color:#ffffff7a}.brand-social{font-size:10px}footer .brand-logo{align-items:center}footer .brand-name{font-size:20px}footer .brand-name>span{font-size:6px}}
-
-.closing .brand-social{color:#51002e;border-color:#79004488}
+/* Palette supplied in the institutional website brief. */
+:root {
+  --brand: #df2a93;
+  --brand-deep: #17191d;
+  --brand-action: #df2a93;
+  --brand-soft: #f8d8ea;
+  --brand-blush: #e96db7;
+  --paper: #fff;
+  --ink: #17191d;
+  --muted: #17191d;
+  --gray: #8b8b8b;
+  --line: #f8d8ea;
+}

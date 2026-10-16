@@ -1,6 +1,31 @@
-import { useState } from 'react';
-import { Heart, ArrowUpRight, X } from 'lucide-react';
-const entries=[['IMG_4037(1).jpeg','Looks que acompanham momentos especiais.'],['IMG_4034(1).jpeg','Clientes reais usando Valentina Closet.'],['IMG_4032.jpeg','Atendimento, cuidado e entrega que fazem diferença.'],['IMG_4035(1).jpeg','Peças que vestem bem e recebem elogios.'],['IMG_4036(1).jpeg','Valentina Closet em todos os momentos.'],['IMG_4031(1).jpeg','Looks da Valentina também em ocasiões especiais.']];
-// Only show supplied local photographs; never fill customer proof with stock imagery.
-const supplied=import.meta.glob('/public/clientes/*.{jpeg,jpg,png,webp}',{eager:true,query:'?url',import:'default'});
-export default function SocialProof(){const [open,setOpen]=useState<string|null>(null);const available=entries.filter(([file])=>supplied[`/public/clientes/${file}`]);if(!available.length)return null;return <section className="social-proof section" aria-labelledby="social-title"><div className="eyebrow"><Heart size={13}/> CLIENTES REAIS</div><h2 id="social-title">Quem compra na Valentina, <em>ama.</em></h2><p>Clientes reais, looks reais e experiências que falam por nós.</p><div className="social-grid">{available.map(([file,caption])=><button className={`social-card ${file==='IMG_4032.jpeg'?'highlight':''}`} key={file} onClick={()=>setOpen(file)}><img src={`/clientes/${file}`} alt={caption} loading="lazy"/>{file==='IMG_4032.jpeg'&&<strong>Experiência que gera confiança</strong>}<span>{caption}</span></button>)}</div><p>Experiências compartilhadas por nossas clientes</p><a className="button dark" href="https://wa.me/5547996420364" target="_blank" rel="noopener noreferrer">Quero encontrar meu look também <ArrowUpRight size={17}/></a>{open&&<div className="overlay customer-lightbox" role="dialog" aria-modal="true" aria-label="Foto compartilhada por cliente" onClick={()=>setOpen(null)} onKeyDown={e=>{if(e.key==='Escape')setOpen(null);if(e.key==='Tab')e.preventDefault();}}><button className="close" autoFocus aria-label="Fechar imagem" onClick={()=>setOpen(null)}><X/></button><img src={`/clientes/${open}`} alt={entries.find(([f])=>f===open)?.[1]}/></div>}</section>}
+import { useRef, useState } from 'react';
+import { ArrowUpRight, ArrowLeft, ArrowRight } from 'lucide-react';
+import Dialog from './components/Dialog';
+import { whatsapp } from './data';
+const entries = [
+  ['cliente-palco.jpg', 'Look no palco — registro compartilhado nos stories da loja.'],
+  ['cliente-poa.jpg', 'Regata de poá — cliente compartilhando seu look Valentina.'],
+  ['cliente-azul.jpg', 'Vestido azul — registro compartilhado nos stories da loja.'],
+  ['cliente-rosa.jpg', 'Blusa rosa e saia preta — look compartilhado por cliente.'],
+];
+const supplied = import.meta.glob('/public/clientes/*.{jpeg,jpg,png,webp}', { eager: true, query: '?url', import: 'default' });
+export default function SocialProof() {
+  const [open, setOpen] = useState<string | null>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const move = (direction: number) => {
+    const el = track.current;
+    if (!el) return;
+    const step = (el.querySelector('button')?.getBoundingClientRect().width || 280) + 32;
+    el.scrollBy({ left: direction * step, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  };
+  const available = entries.filter(([file]) => supplied[`/public/clientes/${file}`]);
+
+  return <section className="social-proof" id="clientes" aria-labelledby="social-title">
+    <div className="section-kicker"><span>05 / QUEM VESTE VALENTINA</span><span>EXPERIÊNCIAS COMPARTILHADAS</span></div>
+    <div className="proof-heading"><h2 id="social-title">Elas vestem<br /><em>Valentina.</em></h2><div><p>Mais do que roupas. Looks que fazem parte de momentos, histórias e personalidades.</p><strong>7 mil+</strong><p>Mais de 7 mil pessoas acompanham a Valentina todos os dias.</p><a className="text-link" href="https://www.instagram.com/valentinaclosetloja/" target="_blank" rel="noopener noreferrer">Encontre a gente no Instagram <ArrowUpRight size={17} /></a></div></div>
+    {available.length > 0 ? <div className="proof-wall" ref={track} id="customer-carousel" role="region" aria-label="Fotos de clientes — carrossel" tabIndex={0}>{available.map(([file, caption], i) => <button key={file} className={`proof-print proof-print-${i} ${file === 'IMG_4032.jpeg' ? 'proof-feedback' : ''}`} aria-label={`Ampliar: ${caption}`} data-view onClick={() => setOpen(file)}><img src={`/clientes/${file}`} alt={caption} loading="lazy" /><span>{caption}</span></button>)}</div> : <div className="proof-pending">{[["Fotos de clientes", "Seu look, sua história."], ["Mensagens recebidas", "O carinho de quem veste."], ["Na vida real", "Momentos com a Valentina."]].map(([label, text], i) => <div className={`proof-placeholder proof-placeholder-${i}`} key={label}><span>0{i + 1} / {label}</span><em>{text}</em><small>ESPAÇO RESERVADO<br />Aguardando conteúdo real autorizado.</small></div>)}</div>}
+    {available.length > 0 && <div className="proof-controls"><span>DESLIZE PARA CONHECER AS HISTÓRIAS</span><div><button aria-label="Fotos anteriores" aria-controls="customer-carousel" onClick={() => move(-1)}><ArrowLeft size={20} /></button><button aria-label="Próximas fotos" aria-controls="customer-carousel" onClick={() => move(1)}><ArrowRight size={20} /></button></div></div>}
+    <a className="text-link" href={whatsapp} target="_blank" rel="noopener noreferrer" data-magnetic>Quero encontrar meu look também <ArrowUpRight size={19} /></a>
+    {open && <Dialog label="Foto compartilhada por cliente" onClose={() => setOpen(null)} className="proof-dialog"><img src={`/clientes/${open}`} alt={entries.find(([file]) => file === open)?.[1]} /></Dialog>}
+  </section>;
+}
