@@ -28,7 +28,7 @@ Importe o repositório com preset **Vite**, instalação `npm ci`, build `npm ru
 - `joPhoto`: fotografia autorizada. Enquanto vazio, aparece um placeholder identificado.
 - O hero usa a fotografia real da fachada enviada pela proprietária, em `public/images/valentina-fachada.jpg`.
 - A seção de prova social usa os quatro prints enviados pela proprietária: `cliente-palco.jpg`, `cliente-poa.jpg`, `cliente-azul.jpg` e `cliente-rosa.jpg`, em `src/assets/clientes/`. Os arquivos são preservados completos, com swipe, arraste, setas e ampliação em modal. Não há avaliações inventadas.
-- Para trocar ou adicionar histórias, atualize `entries` em `src/SocialProof.tsx` e recompile. Fotos reais de bastidores e retrato individual da Jô continuam pendentes. As demais fotografias editoriais de referência têm origem em `public/images/ATTRIBUTION.md`.
+- Para trocar ou adicionar histórias, atualize `entries` em `src/SocialProof.tsx` e recompile. Fotos reais de bastidores e retrato individual da Jô continuam pendentes. As cinco fotos de roupas enviadas pela proprietária estão em `src/assets/looks/`, importadas em `src/data.ts` e reutilizadas nas composições. As antigas imagens de referência não são mais exibidas.
 
 ## Design e desempenho
 
@@ -36,6 +36,6 @@ A paleta atual segue o briefing institucional: rosa #DF2A93, rosa secundário #E
 
 A escultura de seda é geometria procedural real, renderizada em WebGL. Não representa produto ou estoque. Nenhum modelo GLB foi fornecido. O módulo 3D é separado e carregado ao se aproximar da área visível; mobile usa geometrias reduzidas, DPR 1 e iluminação simplificada. Renderização pausa fora da tela e em abas ocultas. Há fallback para indisponibilidade de WebGL.
 
-Desktop tem passarela fixada durante rolagem vertical, parallax, conceitos sequenciais e cursor contextual. Mobile usa galerias com swipe e fluxo normal. O mouse permite arrastar as galerias. Redução de movimento remove animações e pinning, preservando todo o conteúdo. Diálogos têm contenção e restauração de foco e fechamento por Escape.
+Desktop tem passarela fixada durante rolagem vertical, parallax, conceitos sequenciais e cursor contextual. Mobile usa galerias com swipe e fluxo normal. No hero, título, foto, texto e CTA seguem o fluxo da página, sem parallax que provoque sobreposição. O mouse permite arrastar as galerias. Redução de movimento remove animações e pinning, preservando todo o conteúdo. Diálogos têm contenção e restauração de foco e fechamento por Escape.
 
 Imagens abaixo da dobra e mapa usam lazy loading. Fontes e fotos são locais. O motor 3D ainda gera aviso de chunk grande no Vite; atingir 60 FPS exige medição em aparelhos físicos. Testes Chromium por software não equivalem a medir desempenho real em celular.

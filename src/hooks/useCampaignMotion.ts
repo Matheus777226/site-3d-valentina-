@@ -13,12 +13,14 @@ export function useCampaignMotion(reduced: boolean) {
     gsap.ticker.add(tick);
     const mm = gsap.matchMedia();
     const ctx = gsap.context(() => {
+      mm.add('(min-width: 900px)', () => {
       const hero = gsap.timeline({ scrollTrigger: { trigger: '.campaign-hero', start: 'top top', end: 'bottom top', scrub: true } });
       hero.to('.hero-title-first', { yPercent: -38, ease: 'none' }, 0)
         .to('.hero-title-last', { yPercent: -80, xPercent: 7, ease: 'none' }, 0)
         .to('.hero-portrait', { scale: 1.28, rotate: 4, yPercent: 14, ease: 'none' }, 0)
         .to('.hero-note', { yPercent: -90, ease: 'none' }, 0)
         .to('.hero-echo', { scale: .72, yPercent: -50, ease: 'none' }, 0);
+      });
 
       gsap.from('.hero-title>span', { clipPath: 'inset(0 0 100% 0)', duration: 1.1, stagger: .15, ease: 'power2.out' });
       gsap.utils.toArray<HTMLElement>('.collection-overlap, .human-reference').forEach(el => gsap.fromTo(el, { y: 30 }, { y: -30, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } }));

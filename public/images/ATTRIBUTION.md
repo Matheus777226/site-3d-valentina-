@@ -10,3 +10,5 @@ Substitua pelas fotografias autorizadas da marca antes da publicação comercial
 - `valentina-fachada.jpg`: fotografia da fachada enviada pela usuária para uso no hero. Arquivo original preservado, 1280 × 960; enquadramento responsivo via CSS.
 
 - `src/assets/clientes/cliente-palco.jpg`, `cliente-poa.jpg`, `cliente-azul.jpg` e `cliente-rosa.jpg`: quatro prints enviados pela usuária para o carrossel de provas sociais. Arquivos preservados completos, sem alterações ou depoimentos acrescentados.
+
+- `src/assets/looks/1-Foto-1.jpg` a `5-Foto-5.jpg`: cinco fotografias de roupas fornecidas pela proprietária para substituir todas as imagens de referência. Arquivos originais preservados; exibição responsiva sem cortar as peças. As imagens de referência antigas não são mais usadas pela interface.
