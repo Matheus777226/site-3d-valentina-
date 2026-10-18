@@ -25,10 +25,10 @@ Importe o repositório com preset **Vite**, instalação `npm ci`, build `npm ru
 
 - `vipGroupUrl`: convite verificado do grupo. Enquanto vazio, oferece pedir convite pelo WhatsApp da loja, com aviso explícito.
 - `joWhatsappUrl`: contato direto verificado da Jô. Enquanto vazio, oferece pedir atendimento dela pelo WhatsApp da loja.
-- `joPhoto`: fotografia autorizada. Enquanto vazio, aparece um placeholder identificado.
+- `joPhoto`: retrato enviado pela proprietária, importado de `src/assets/equipe/jo.jpg`.
 - O hero usa a fotografia real da fachada enviada pela proprietária, em `public/images/valentina-fachada.jpg`.
 - A seção de prova social usa os quatro prints enviados pela proprietária: `cliente-palco.jpg`, `cliente-poa.jpg`, `cliente-azul.jpg` e `cliente-rosa.jpg`, em `src/assets/clientes/`. Os arquivos são preservados completos, com swipe, arraste, setas e ampliação em modal. Não há avaliações inventadas.
-- Para trocar ou adicionar histórias, atualize `entries` em `src/SocialProof.tsx` e recompile. Fotos reais de bastidores e retrato individual da Jô continuam pendentes. As cinco fotos de roupas enviadas pela proprietária estão em `src/assets/looks/`, importadas em `src/data.ts` e reutilizadas nas composições. As antigas imagens de referência não são mais exibidas.
+- Para trocar ou adicionar histórias, atualize `entries` em `src/SocialProof.tsx` e recompile. Fotos reais de bastidores continuam pendentes. As cinco fotos de roupas enviadas pela proprietária estão em `src/assets/looks/`, importadas em `src/data.ts` e reutilizadas nas composições. As antigas imagens de referência não são mais exibidas.
 
 ## Design e desempenho
 

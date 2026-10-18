@@ -51,3 +51,5 @@
 .dialog-photo{object-fit:contain;background:var(--brand-soft)}
 .summer-collection .collection-copy h2{font-size:clamp(42px,5.3vw,80px);line-height:1.03}.summer-collection .collection-copy h2 em{font-size:1.22em}
 @media(max-width:599px){.summer-collection .collection-copy h2{font-size:clamp(38px,10.8vw,62px)}}
+.jo-portrait.has-photo{height:auto;aspect-ratio:1190/726;width:100%;transform:rotate(-3deg);overflow:hidden}.jo-portrait.has-photo img{display:block;width:100%;height:auto;object-fit:contain}
+@media(max-width:599px){.jo-portrait.has-photo{width:100%;height:auto;transform:none}}

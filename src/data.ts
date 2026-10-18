@@ -1,3 +1,4 @@
+import joPortrait from './assets/equipe/jo.jpg';
 import look1 from './assets/looks/1-Foto-1.jpg';
 import look2 from './assets/looks/2-Foto-2.jpg';
 import look3 from './assets/looks/3-Foto-3.jpg';
@@ -12,7 +13,7 @@ export const store = {
   catalogUrl: 'https://wa.me/c/554732226894',
   vipGroupUrl: '', // Add the verified WhatsApp group invitation here.
   joWhatsappUrl: '', // Add Jô’s verified direct contact here.
-  joPhoto: '', // Add the authorized portrait URL here.
+  joPhoto: joPortrait,
   street: 'Rua Júlio Michel, 262',
   cityStateCountry: 'Blumenau, Santa Catarina, Brasil',
   maps: 'https://www.google.com/maps/search/?api=1&query=Rua%20J%C3%BAlio%20Michel%2C%20262%2C%20Blumenau%2C%20Santa%20Catarina%2C%20Brasil',
