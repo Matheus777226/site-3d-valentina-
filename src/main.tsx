@@ -44,7 +44,7 @@ function App() {
         <div className="hero-bottomline"><span>MODA DE VERDADE, PARA A VIDA REAL.</span><span>DESCUBRA A VALENTINA <span aria-hidden="true">↓</span></span></div>
       </section>
 
-      <NewCollection reduced={reduced} />
+      <NewCollection />
       <Catalog />
       <section className="manifesto" id="manifesto" aria-labelledby="manifesto-title">
         <div className="section-kicker"><span>02 / O NOSSO JEITO DE VER A MODA</span><span>FEITO PARA SENTIR.</span></div>

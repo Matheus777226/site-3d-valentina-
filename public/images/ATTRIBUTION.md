@@ -14,3 +14,5 @@ Substitua pelas fotografias autorizadas da marca antes da publicação comercial
 - `src/assets/looks/1-Foto-1.jpg` a `5-Foto-5.jpg`: cinco fotografias de roupas fornecidas pela proprietária para substituir todas as imagens de referência. Arquivos originais preservados; exibição responsiva sem cortar as peças. As imagens de referência antigas não são mais usadas pela interface.
 
 - `src/assets/equipe/jo.jpg`: retrato de Jô enviado pela proprietária para a seção de atendimento. Fotografia original preservada e exibida por inteiro.
+
+- `src/assets/looks/colecao-verao.png`: arte da coleção de verão fornecida pela proprietária em ZIP. Arquivo original preservado e exibido integralmente, substituindo as duas fotografias da seção de novidades.

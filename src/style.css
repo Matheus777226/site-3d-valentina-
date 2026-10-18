@@ -53,3 +53,10 @@
 @media(max-width:599px){.summer-collection .collection-copy h2{font-size:clamp(38px,10.8vw,62px)}}
 .jo-portrait.has-photo{height:auto;aspect-ratio:1190/726;width:100%;transform:rotate(-3deg);overflow:hidden}.jo-portrait.has-photo img{display:block;width:100%;height:auto;object-fit:contain}
 @media(max-width:599px){.jo-portrait.has-photo{width:100%;height:auto;transform:none}}
+
+/* A single campaign image, kept complete at every viewport size. */
+.summer-collection .collection-editorial{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7%;align-items:center;min-height:0;padding-bottom:0}
+.summer-collection .collection-lead-photo{position:relative;inset:auto;width:100%;max-width:500px;height:auto;aspect-ratio:633/934;margin-inline:auto;transform:none;overflow:visible;background:transparent}
+.summer-collection .collection-lead-photo img{display:block;width:100%;height:auto;object-fit:contain;background:transparent}
+.summer-collection .collection-copy{padding:0;min-width:0}.summer-collection .collection-copy p{max-width:370px}
+@media(max-width:699px){.summer-collection .collection-editorial{grid-template-columns:minmax(0,1fr);gap:32px}.summer-collection .collection-copy h2{font-size:clamp(38px,10.8vw,62px);line-height:1.03}.summer-collection .collection-lead-photo{max-width:460px}}

@@ -23,7 +23,7 @@ export function useCampaignMotion(reduced: boolean) {
       });
 
       gsap.from('.hero-title>span', { clipPath: 'inset(0 0 100% 0)', duration: 1.1, stagger: .15, ease: 'power2.out' });
-      gsap.utils.toArray<HTMLElement>('.collection-overlap, .human-reference').forEach(el => gsap.fromTo(el, { y: 30 }, { y: -30, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } }));
+      gsap.utils.toArray<HTMLElement>('.human-reference').forEach(el => gsap.fromTo(el, { y: 30 }, { y: -30, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } }));
       gsap.utils.toArray<HTMLElement>('.manifesto-word').forEach((word, i) => {
         gsap.fromTo(word, { opacity: .2, y: 26 }, { opacity: 1, y: 0, ease: 'none', scrollTrigger: { trigger: '.manifesto', start: `top+=${i * 55} 75%`, end: `top+=${i * 55 + 150} 60%`, scrub: true } });
       });
