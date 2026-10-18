@@ -49,3 +49,5 @@
 }
 .collection-lead-photo img,.collection-overlap img,.look-photo,.concept-photo img,.gallery-piece img,.instagram-print img{object-fit:contain;object-position:center;background:var(--brand-soft)}
 .dialog-photo{object-fit:contain;background:var(--brand-soft)}
+.summer-collection .collection-copy h2{font-size:clamp(42px,5.3vw,80px);line-height:1.03}.summer-collection .collection-copy h2 em{font-size:1.22em}
+@media(max-width:599px){.summer-collection .collection-copy h2{font-size:clamp(38px,10.8vw,62px)}}
