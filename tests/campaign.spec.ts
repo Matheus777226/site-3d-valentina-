@@ -1,145 +1,133 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-async function scrollToY(page: Page, y: number) {
-  await page.evaluate(value => window.scrollTo({ top: value, behavior: 'instant' }), y);
-  await expect.poll(() => page.evaluate(() => Math.round(scrollY)), { timeout: 8000 }).toBeCloseTo(Math.round(y), -1);
-}
+const shopNumber = '5547996420364';
+const catalogUrl = 'https://wa.me/c/554732226894';
 
-test('preserves the brand palette and renders live WebGL with local assets', async ({ page }) => {
+test('landing prioritizes conversation, preserves essential sections and avoids repeated imagery', async ({ page }) => {
   const errors: string[] = [];
-  const failed: string[] = [];
+  const failures: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
-  page.on('response', response => { if (response.status() >= 400) failed.push(response.url()); });
-  await page.goto('/');
-  await expect(page.locator('canvas[data-webgl="ready"]').first()).toBeVisible();
-  const palette = await page.evaluate(() => {
-    const style = getComputedStyle(document.documentElement);
-    return ['--brand', '--brand-deep', '--brand-action', '--brand-soft', '--brand-blush', '--paper', '--ink', '--muted', '--line'].map(name => style.getPropertyValue(name).trim());
+  page.on('response', response => {
+    if (response.url().startsWith('http://127.0.0.1:4180/') && response.status() >= 400) failures.push(response.url());
   });
-  expect(palette).toEqual(['#df2a93', '#17191d', '#df2a93', '#f8d8ea', '#e96db7', '#fff', '#17191d', '#17191d', '#f8d8ea']);
-  const photo = await page.locator('.hero-portrait').boundingBox();
-  expect(photo!.x).toBeGreaterThan(200);
-  expect(photo!.x + photo!.width).toBeLessThan(1440);
-  expect(photo!.y + photo!.height).toBeLessThan(1000);
-  await page.screenshot({ path: '/tmp/valentina-campaign-desktop.png' });
-  const transform = await page.locator('.hero-title-first').evaluate(el => getComputedStyle(el).transform);
-  await scrollToY(page, 450);
-  await expect.poll(() => page.locator('.hero-title-first').evaluate(el => getComputedStyle(el).transform)).not.toBe(transform);
-  expect(errors).toEqual([]);
-  expect(failed).toEqual([]);
-  await expect(page.locator('.proof-print')).toHaveCount(4);
-});
-
-test('vertical scroll advances the pinned runway and sequential concepts', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('.runway.is-horizontal')).toBeAttached();
-  await page.evaluate(() => document.fonts.ready);
-  const bounds = await page.locator('.runway').evaluate(el => ({ top: el.getBoundingClientRect().top + scrollY, travel: el.querySelector('.runway-track')!.scrollWidth - innerWidth }));
-  await scrollToY(page, bounds.top + bounds.travel * .42);
-  await expect.poll(() => page.locator('.runway').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(5);
-  await expect.poll(() => page.locator('.runway-track').evaluate(el => new DOMMatrix(getComputedStyle(el).transform).m41)).toBeLessThan(-500);
-  const look = page.getByRole('button', { name: 'Ver editorial Entre texturas', exact: true });
-  await look.focus();
-  await look.press('Enter');
-  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Entre texturas' })).toBeVisible();
-  await page.getByRole('button', { name: 'Próximo editorial' }).click();
-  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Naturalmente você' })).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog')).toHaveCount(0);
-  await expect(look).toBeFocused();
-  const start = await page.locator('.concepts').evaluate(el => el.getBoundingClientRect().top + scrollY);
-  await scrollToY(page, start + 1900);
-  await expect.poll(() => page.locator('.concepts').evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(5);
-  await expect(page.getByRole('heading', { name: 'Atitude', exact: true })).toBeVisible();
-});
-
-test('mobile keeps normal page scrolling, swipe gallery and working navigation', async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  const page = await context.newPage();
-  const errors: string[] = [];
-  page.on('pageerror', error => errors.push(error.message));
-  await page.goto('/');
-  await expect(page.locator('canvas[data-webgl="ready"]').first()).toBeVisible();
-  await expect(page.locator('.art-cursor')).toBeHidden();
-  await expect(page.locator('.pin-spacer')).toHaveCount(0);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: '/tmp/valentina-campaign-mobile.png' });
-  await page.getByRole('button', { name: 'Abrir menu' }).click();
-  await page.getByRole('dialog').getByRole('link', { name: 'Looks' }).click();
-  await expect(page.getByRole('dialog')).toHaveCount(0);
-  const track = page.locator('.runway-track');
-  await track.evaluate(el => { el.scrollLeft = el.clientWidth * 2; });
-  await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBeGreaterThan(400);
-  await page.getByRole('button', { name: 'Ver editorial Entre texturas', exact: true }).click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await page.getByRole('button', { name: 'Fechar', exact: true }).click();
-  await expect(page.getByRole('dialog')).toHaveCount(0);
-  expect(await page.locator('.art-webgl').first().evaluate(el => getComputedStyle(el).pointerEvents)).toBe('none');
-  await page.setViewportSize({ width: 320, height: 740 });
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  expect(errors).toEqual([]);
-  await context.close();
-});
-
-test('reduced motion shows all content and keyboard focus stays inside dialogs', async ({ browser }) => {
-  const context = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 1280, height: 900 } });
-  const page = await context.newPage();
-  await page.goto('/');
-  await expect(page.locator('.pin-spacer')).toHaveCount(0);
-  await expect(page.locator('.art-cursor')).toBeHidden();
-  expect(await page.locator('.manifesto-word').evaluateAll(elements => elements.every(el => getComputedStyle(el).opacity === '1'))).toBe(true);
-  for (const title of ['Elegância', 'Personalidade', 'Atitude', 'Estilo']) await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Ver editorial Essência urbana', exact: true }).click();
-  const dialog = page.getByRole('dialog');
-  await expect(dialog).toBeVisible();
-  const close = dialog.getByRole('button', { name: 'Fechar', exact: true });
-  await expect(close).toBeFocused();
-  await page.keyboard.press('Shift+Tab');
-  await expect(dialog.getByRole('button', { name: 'Próximo editorial' })).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect(close).toBeFocused();
-  expect(await page.locator('#root').evaluate(el => el.inert)).toBe(true);
-  await page.keyboard.press('Escape');
-  expect(await page.locator('#root').evaluate(el => el.inert)).toBe(false);
-  await expect(page.locator('.contact-orb')).toHaveAttribute('href', 'https://wa.me/5547996420364');
-  await context.close();
-});
-
-test('institutional contacts and placeholders are honest and all anchors resolve', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle('Valentina Closet | Moda Feminina em Blumenau');
-  await expect(page.locator('h1')).toHaveText('A modatetransforma.');
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('h1')).toContainText('conversa');
+  const primary = page.locator('.hero-primary');
+  await expect(primary).toBeVisible();
+  await expect(primary).toHaveAttribute('href', new RegExp(`^https://wa\\.me/${shopNumber}\\?text=`));
+  await expect(page.locator('#inicio').getByRole('link', { name: 'Ver catálogo', exact: true })).toHaveAttribute('href', catalogUrl);
+  for (const id of ['novidades', 'catalogo', 'clientes', 'jo', 'vip', 'instagram', 'loja']) await expect(page.locator(`#${id}`)).toHaveCount(1);
+  await expect(page.locator('canvas, .pin-spacer, .runway, .art-gallery, .concepts, .manifesto')).toHaveCount(0);
   const unresolved = await page.locator('a[href^="#"]').evaluateAll(links => links.map(link => link.getAttribute('href')!).filter(href => !document.getElementById(href.slice(1))));
   expect(unresolved).toEqual([]);
-  await expect(page.locator('#vip .pill-button')).toHaveAttribute('href', /wa\.me\/5547996420364\?text=/);
-  await expect(page.locator('#vip')).toContainText('Link direto do grupo em breve');
+  const photos = await page.locator('main img').evaluateAll(images => images.map(img => (img as HTMLImageElement).src));
+  expect(new Set(photos).size).toBe(photos.length);
+  expect(errors).toEqual([]);
+  expect(failures).toEqual([]);
+});
+
+test('catalog and contact calls preserve their destinations and supply relevant conversation starters', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#catalogo a').filter({ hasText: /catálogo/i }).first()).toHaveAttribute('href', catalogUrl);
+  const expected: Array<[string, RegExp]> = [
+    ['#novidades', /verão/i],
+    ['#clientes', /look|escolher/i],
+    ['#vip', /convite|grupo vip/i],
+    ['#jo', /Jô/i],
+  ];
+  for (const [section, message] of expected) {
+    const href = await page.locator(`${section} a[href^="https://wa.me/${shopNumber}"]`).first().getAttribute('href');
+    const url = new URL(href!);
+    expect(url.pathname).toBe(`/${shopNumber}`);
+    expect(url.searchParams.get('text')).toMatch(message);
+  }
+  await expect(page.locator('#vip')).toContainText('WhatsApp da loja');
   await expect(page.locator('#jo')).toContainText('WhatsApp da loja');
-  await expect(page.locator('.proof-placeholder')).toHaveCount(0);
-  await expect(page.locator('a')).not.toContainText(['Comprar pelo WhatsApp']);
-  await expect(page.locator('#loja address')).toContainText('Blumenau, Santa Catarina, Brasil');
-  for (const width of [320, 390, 768, 1024]) {
+  await expect(page.locator('#jo img')).toHaveAttribute('src', /jo.*\.jpg$/);
+  await expect(page.locator('#instagram a[href="https://www.instagram.com/valentinaclosetloja/"]').first()).toBeAttached();
+  await expect(page.locator('#loja address')).toContainText('Rua Júlio Michel, 262');
+  const maps = new URL((await page.locator('#loja a[href*="google.com/maps"]').first().getAttribute('href'))!);
+  expect(maps.searchParams.get('query')).toMatch(/Júlio Michel.*262.*Blumenau/);
+  await expect(page.locator('#novidades img')).toHaveCount(1);
+  await expect(page.locator('#novidades img')).toHaveAttribute('src', /colecao-verao.*\.png$/);
+});
+
+test('mobile menu works by keyboard and persistent contact remains reachable without horizontal overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const menu = page.getByRole('button', { name: 'Abrir menu', exact: true });
+  await menu.click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('button', { name: 'Fechar', exact: true })).toBeFocused();
+  expect(await page.locator('#root').evaluate(el => el.inert)).toBe(true);
+  await page.keyboard.press('Shift+Tab');
+  expect(await dialog.evaluate(el => el.contains(document.activeElement))).toBe(true);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(menu).toBeFocused();
+  await menu.click();
+  await page.getByRole('dialog').getByRole('link', { name: 'Catálogo', exact: false }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  expect(await page.locator('#root').evaluate(el => el.inert)).toBe(false);
+
+  for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
+    await page.evaluate(() => document.fonts.ready);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    if (width <= 390) {
+      const contact = page.locator('.mobile-contact-bar');
+      await expect(contact).toBeVisible();
+      await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
+      const bounds = await contact.boundingBox();
+      expect(bounds!.y).toBeGreaterThanOrEqual(0);
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(901);
+      await expect(contact.locator('a').first()).toHaveAttribute('href', new RegExp(`^https://wa\\.me/${shopNumber}\\?text=`));
+    }
   }
 });
 
-test('customer carousel shows four original prints, advances and opens full images', async ({ page }) => {
+test('customer carousel loads original photos and opens a complete image with accessible dismissal', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   const track = page.locator('.proof-wall');
   await track.scrollIntoViewIfNeeded();
   await expect(track.locator('img')).toHaveCount(4);
-  for (const img of await track.locator('img').all()) {
-    await img.scrollIntoViewIfNeeded();
-    await expect.poll(() => img.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  for (const image of await track.locator('img').all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   }
   await track.evaluate(el => el.scrollTo({ left: 0, behavior: 'instant' }));
   await page.getByRole('button', { name: 'Próximas fotos', exact: true }).click();
-  await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBeGreaterThan(200);
-  await page.getByRole('button', { name: 'Ampliar: Regata de poá', exact: false }).click();
-  await expect(page.getByRole('dialog').locator('img')).toHaveAttribute('src', /cliente-poa.*\.jpg$/);
+  await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBeGreaterThan(150);
+  const photo = page.getByRole('button', { name: 'Ampliar: Regata de poá', exact: false });
+  await photo.click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.locator('img')).toHaveAttribute('src', /cliente-poa.*\.jpg$/);
+  await expect(dialog.getByRole('button', { name: 'Fechar', exact: true })).toBeFocused();
+  await page.keyboard.press('Tab');
+  expect(await dialog.evaluate(el => el.contains(document.activeElement))).toBe(true);
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(dialog).toHaveCount(0);
+  await expect(photo).toBeFocused();
+});
+
+test('reduced motion retains collection content and direct contact actions', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 390, height: 844 } });
+  const page = await context.newPage();
+  await page.goto('/');
+  await expect(page.locator('.hero-primary')).toBeVisible();
+  await page.locator('#novidades').scrollIntoViewIfNeeded();
+  await page.locator('#novidades img').evaluate(img => (img as HTMLImageElement).decode());
+  const image = await page.locator('#novidades img').evaluate(el => {
+    const img = el as HTMLImageElement;
+    return { natural: img.naturalWidth / img.naturalHeight, rendered: img.getBoundingClientRect().width / img.getBoundingClientRect().height };
+  });
+  expect(image.rendered).toBeCloseTo(image.natural, 2);
+  await expect(page.locator('#novidades h2')).toContainText('de verão');
+  await expect(page.locator('canvas, .pin-spacer')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: '/tmp/valentina-clientes-mobile.png' });
+  await context.close();
 });

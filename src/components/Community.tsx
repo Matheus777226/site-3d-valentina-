@@ -1,9 +1,54 @@
 import { ArrowUpRight, MessageCircle } from 'lucide-react';
-import { store, whatsapp } from '../data';
+import { store, whatsappLink } from '../data';
+
 export function VIPGroup() {
-  return <section className="vip-section" id="vip" aria-labelledby="vip-title"><div className="vip-copy"><span className="eyebrow">UM CÍRCULO DE NOVAS POSSIBILIDADES</span><h2 id="vip-title">Entre para o<br /><em>Grupo VIP</em><br />da Valentina.</h2><p>Receba novidades, lançamentos, promoções e oportunidades especiais em primeira mão.</p><ul><li>Novos looks e lançamentos</li><li>Promoções e oportunidades especiais</li><li>Avisos exclusivos da loja</li></ul>{store.vipGroupUrl ? <a className="pill-button" href={store.vipGroupUrl} target="_blank" rel="noopener noreferrer">Entrar no Grupo VIP <ArrowUpRight size={18} /></a> : <><a className="pill-button" href={`${whatsapp}?text=${encodeURIComponent('Olá! Gostaria de receber o convite para o Grupo VIP da Valentina.')}`} target="_blank" rel="noopener noreferrer">Pedir convite para o Grupo VIP <ArrowUpRight size={18} /></a><small>Link direto do grupo em breve. Peça o convite à equipe.</small></>}</div><div className="vip-art" aria-label="Ilustração conceitual do Grupo VIP"><span className="vip-orbit" /><div className="vip-phone"><span>VALENTINA / VIP</span><MessageCircle size={42} strokeWidth={1} /><strong>Você vê<br /><em>primeiro.</em></strong><div>Novidades</div><div>Inspirações</div><div>Novos encontros</div><small>ILUSTRAÇÃO CONCEITUAL</small></div><span className="vip-art-label">SEU ESTILO. NOSSO ENCONTRO.</span></div></section>;
+  const inviteLink = store.vipGroupUrl || whatsappLink(
+    'Olá! Quero entrar no Grupo VIP da Valentina Closet. Pode me enviar o convite?',
+  );
+
+  return (
+    <section className="vip-section" id="vip" aria-labelledby="vip-title">
+      <div className="vip-copy">
+        <span className="section-label">NOVIDADES EM PRIMEIRA MÃO</span>
+        <h2 id="vip-title">Entre para o <em>Grupo VIP.</em></h2>
+        <p>Receba os lançamentos, novidades e promoções da Valentina pelo WhatsApp.</p>
+      </div>
+      <div className="vip-actions">
+        <a className="button button-primary" href={inviteLink} target="_blank" rel="noopener noreferrer">
+          Quero entrar no Grupo VIP <ArrowUpRight size={20} aria-hidden="true" />
+        </a>
+        <p className="cta-note">
+          {store.vipGroupUrl ? 'Abra o convite e participe do grupo.' : 'Peça o convite pelo WhatsApp da loja.'}
+        </p>
+      </div>
+    </section>
+  );
 }
+
 export function SalespersonJo() {
-  const link = store.joWhatsappUrl || `${whatsapp}?text=${encodeURIComponent('Oi, Jô! Vim pelo site da Valentina Closet e gostaria de saber mais sobre os looks da loja.')}`;
-  return <section className="jo-section" id="jo" aria-labelledby="jo-title"><div className={`jo-portrait${store.joPhoto ? ' has-photo' : ''}`}>{store.joPhoto ? <img src={store.joPhoto} alt="Jô, atendimento Valentina Closet" loading="lazy" width="1190" height="726" /> : <><span className="jo-initial">Jô.</span><small>ESPAÇO RESERVADO<br />Foto real da Jô em breve.</small></>}</div><div className="jo-copy"><span className="eyebrow">ATENDIMENTO VALENTINA CLOSET</span><h2 id="jo-title">Quer encontrar<br /><em>o look perfeito?</em></h2><h3>Fale diretamente com a Jô.</h3><p>Ela pode te ajudar com dúvidas, novidades, combinações de looks e informações sobre peças disponíveis.</p><a className="text-link" href={link} target="_blank" rel="noopener noreferrer">{store.joWhatsappUrl ? 'Conversar com a Jô no WhatsApp' : 'Pedir para falar com a Jô'}<ArrowUpRight size={20} /></a>{!store.joWhatsappUrl && <small>Você será direcionada ao WhatsApp da loja.</small>}</div></section>;
+  const message = 'Oi, Jô! Vim pelo site da Valentina Closet. Quero ajuda para escolher um look e saber os tamanhos disponíveis.';
+  const contact = new URL(store.joWhatsappUrl || whatsappLink(message));
+  contact.searchParams.set('text', message);
+
+  return (
+    <section className="jo-section" id="jo" aria-labelledby="jo-title">
+      {store.joPhoto && (
+        <figure className="jo-portrait">
+          <img src={store.joPhoto} alt="Jô, atendente da Valentina Closet" loading="lazy" decoding="async" width="1190" height="726" />
+          <figcaption>Jô · Atendimento Valentina Closet</figcaption>
+        </figure>
+      )}
+      <div className="jo-copy">
+        <span className="section-label">UMA PESSOA DE VERDADE PARA TE AJUDAR</span>
+        <h2 id="jo-title">Conte seu estilo.<br /><em>A Jô te ajuda a escolher.</em></h2>
+        <p>Mande a foto do look que gostou ou conte o que procura. Tire suas dúvidas sobre peças, tamanhos e combinações.</p>
+        <a className="button button-primary" href={contact.toString()} target="_blank" rel="noopener noreferrer">
+          <MessageCircle size={20} aria-hidden="true" /> Falar com a Jô <ArrowUpRight size={20} aria-hidden="true" />
+        </a>
+        <p className="cta-note">
+          {store.joWhatsappUrl ? 'Converse diretamente com a Jô pelo WhatsApp.' : 'Atendimento pelo WhatsApp da loja.'}
+        </p>
+      </div>
+    </section>
+  );
 }

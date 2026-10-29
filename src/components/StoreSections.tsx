@@ -1,32 +1,30 @@
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowUpRight, Instagram, MapPin, MessageCircle } from 'lucide-react';
 import summerCollection from '../assets/looks/colecao-verao.png';
-import { store, whatsapp, instagram, looks } from '../data';
-const categories = ['Elegante', 'Romântica', 'Casual', 'Moderna', 'Autêntica', 'Clássica', 'Ousada'];
+import { store, instagram, whatsappLink } from '../data';
+
 export function NewCollection() {
-  return <section className="new-collection summer-collection" id="novidades" aria-labelledby="collection-title">
-    <div className="section-kicker"><span>01 / UM NOVO LOOK. UM NOVO DIA.</span><span>NOVIDADES VALENTINA</span></div>
-    <div className="collection-editorial">
-      <div className="collection-lead-photo">
-        <img src={summerCollection} alt="Coleção Verão da Valentina Closet: top rosa e saia branca de franjas, com a mensagem Leveza, estilo e beleza em cada detalhe" loading="lazy" decoding="async" width="633" height="934" />
-      </div>
-      <div className="collection-copy">
-        <span className="eyebrow">ESCOLHAS COM PERSONALIDADE</span>
-        <h2 id="collection-title">Nova coleção<br /><em>de verão</em><br />chegando!</h2>
-        <p>Leveza, estilo e beleza em cada detalhe. Prepare-se para os novos looks da estação.</p>
-        <a className="pill-button" href={`${whatsapp}?text=${encodeURIComponent('Olá! Quero saber mais sobre a nova coleção de verão da Valentina Closet.')}`} target="_blank" rel="noopener noreferrer" data-magnetic>Ver novidades <ArrowUpRight size={19} /></a>
-      </div>
+  return <section className="new-collection" id="novidades" aria-labelledby="collection-title">
+    <div className="collection-photo"><img src={summerCollection} alt="Campanha Coleção Verão da Valentina Closet: top rosa e saia branca de franjas" loading="lazy" decoding="async" width="633" height="934" /></div>
+    <div className="collection-copy">
+      <span className="section-label">O PRÓXIMO LOOK TEM CLIMA DE VERÃO</span>
+      <h2 id="collection-title">Nova coleção<br /><em>de verão</em><br />chegando!</h2>
+      <p>Gostou da coleção? Fale com a gente para saber das novidades, tamanhos e disponibilidade.</p>
+      <a className="button button-primary" href={whatsappLink('Olá! Quero saber mais sobre a nova coleção de verão da Valentina Closet.')} target="_blank" rel="noopener noreferrer">Quero saber da coleção <ArrowUpRight size={20} /></a>
+      <span className="cta-note">Tire suas dúvidas direto com a nossa equipe.</span>
     </div>
-    <div className="category-heading"><span>QUAL É A SUA VIBE HOJE?</span><p>Escolha um estilo e peça sugestões à nossa equipe.</p></div>
-    <nav className="category-list" aria-label="Categorias de looks">{categories.map((category, i) => <a key={category} href={`${whatsapp}?text=${encodeURIComponent(`Olá! Gostaria de ver opções de ${category.toLowerCase()} na Valentina Closet.`)}`} target="_blank" rel="noopener noreferrer"><small>0{i + 1}</small><span>{category}</span><ArrowUpRight size={19} /></a>)}</nav>
-    <p className="reference-note">Confira peças, tamanhos e disponibilidade pelo WhatsApp.</p>
   </section>;
 }
-export function HumanExperience() {
-  return <section className="human-experience" id="experiencia" aria-labelledby="experience-title"><div className="section-kicker"><span>04 / EXPERIÊNCIA VALENTINA</span><span>GENTE DE VERDADE. MODA DE VERDADE.</span></div><div className="human-composition"><div className="human-text"><h2 id="experience-title">Mais do que roupas.<br /><em>Uma experiência<br />feita para você.</em></h2><p>A Valentina Closet nasceu para deixar a moda mais próxima, acessível e cheia de personalidade.</p><p>Aqui, a conversa faz parte do look. Fale com a nossa equipe, tire suas dúvidas e descubra o que combina com o seu momento.</p><a className="text-link" href={whatsapp} target="_blank" rel="noopener noreferrer" data-magnetic>Falar com a equipe <ArrowUpRight size={20} /></a></div><figure className="human-reference"><img src="/images/valentina-fachada.jpg" alt="Fachada e vitrine da Valentina Closet em Blumenau" loading="lazy" /><figcaption>NOSSA LOJA EM BLUMENAU</figcaption></figure><div className="human-photo-placeholder"><span>BASTIDORES<br /><em>da Valentina.</em></span><small>ESPAÇO RESERVADO<br />Fotos reais da loja em breve.</small></div></div></section>;
-}
+
 export function InstagramEditorial() {
-  return <section className="instagram-editorial" id="instagram" aria-labelledby="instagram-title"><div className="section-kicker"><span>06 / NOSSO ENCONTRO DIÁRIO</span><span>NOVIDADES, LOOKS E VIDA REAL.</span></div><div className="instagram-heading"><h2 id="instagram-title">@valentina<br /><em>closetloja</em></h2><div><p>Inspirações para o seu dia.<br />Acompanhe as novidades no nosso perfil.</p><a className="text-link" href={instagram} target="_blank" rel="noopener noreferrer" data-magnetic>Seguir no Instagram <ArrowUpRight size={20} /></a></div></div><div className="instagram-strip">{[looks[2], looks[0], looks[1], looks[3]].map((look, i) => <a className={`instagram-print instagram-print-${i}`} href={instagram} key={look.name} target="_blank" rel="noopener noreferrer" aria-label={`Abrir Instagram da Valentina — inspiração ${look.name}`} data-view><img src={look.image} alt={`Look Valentina: ${look.name}`} loading="lazy" /><span>INSPIRE-SE <ArrowUpRight size={18} /></span></a>)}</div><p className="reference-note">Fotos de looks fornecidas pela Valentina. Acompanhe mais novidades no Instagram.</p></section>;
+  return <section className="instagram-section" id="instagram" aria-labelledby="instagram-title">
+    <div className="instagram-heading"><Instagram size={30} strokeWidth={1.5} /><div><span className="section-label">MAIS DE 7 MIL PESSOAS COM A GENTE</span><h2 id="instagram-title">Seu próximo look<br /><em>pode estar nos stories.</em></h2></div></div>
+    <div className="instagram-actions"><p>Acompanhe as novidades da loja.<br /><strong>@valentinaclosetloja</strong></p><a className="button button-secondary" href={instagram} target="_blank" rel="noopener noreferrer">Seguir no Instagram <ArrowUpRight size={20} /></a></div>
+  </section>;
 }
+
 export function VisitAndDelivery() {
-  return <><section className="visit-store" id="loja" aria-labelledby="visit-title"><div className="section-kicker"><span>07 / NOS ENCONTRAMOS EM BLUMENAU</span><span>SANTA CATARINA, BRASIL.</span></div><div className="visit-layout"><div><span className="eyebrow">A PORTA ESTÁ ABERTA PARA NOVAS POSSIBILIDADES</span><h2 id="visit-title">Mais perto de você<br /><em>do que imagina.</em></h2><address>{store.street}<br />{store.cityStateCountry}</address><p>Conheça de perto a experiência Valentina Closet.<br />Consulte os horários pelo WhatsApp antes da visita.</p><div className="visit-links"><a className="pill-button" href={store.maps} target="_blank" rel="noopener noreferrer" data-magnetic>Como chegar <ArrowUpRight size={19} /></a><a className="text-link" href={whatsapp} target="_blank" rel="noopener noreferrer">Falar com a loja <ArrowRight size={18} /></a></div></div><a className="location-art" href={store.maps} target="_blank" rel="noopener noreferrer" aria-label="Abrir localização da Valentina Closet no Google Maps"><span className="location-orbit location-orbit-one" /><span className="location-orbit location-orbit-two" /><span className="location-label">BLUMENAU<br /><em>é o nosso lugar.</em></span><span className="location-pin"><span />V</span><span className="location-address">RUA JÚLIO MICHEL, 262 <ArrowUpRight size={18} /></span></a></div><details className="map-disclosure"><summary>Ver mapa da região</summary><iframe title="Mapa: Rua Júlio Michel, 262, Blumenau, Santa Catarina, Brasil" src="https://maps.google.com/maps?q=Rua%20J%C3%BAlio%20Michel%2C%20262%2C%20Blumenau%2C%20Santa%20Catarina%2C%20Brasil&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></details><p className="reference-note">Rua Júlio Michel, 262. Esperamos por você!</p></section><section className="delivery" aria-labelledby="delivery-title"><div className="delivery-art" aria-hidden="true"><svg viewBox="0 0 400 390" fill="none"><path className="brazil-outline" d="M65 80l41 9 18-42 43 10 18-18 35 43 44 12 37-8 24 34 38 22-19 38-31 9-12 44-31 30-28 6-14 40-26 25-24 40-20-20 15-30-12-33-40-16-22-40-38-16-24-34-28-14 12-35-6-25 20-16Z"/><path className="delivery-route" d="M219 299Q147 120 114 110M219 299Q300 208 315 145M219 299Q260 105 180 83M219 299Q140 260 100 210"/><circle cx="219" cy="299" r="8"/><circle cx="114" cy="110" r="4"/><circle cx="315" cy="145" r="4"/><circle cx="180" cy="83" r="4"/><circle cx="100" cy="210" r="4"/></svg><span>FEITO PARA CHEGAR ATÉ VOCÊ.</span></div><div className="delivery-copy"><span className="eyebrow">A DISTÂNCIA NÃO LIMITA O SEU ESTILO</span><h2 id="delivery-title">De Blumenau<br /><em>para todo o Brasil.</em></h2><p>Enviamos seu look Valentina para todo o país.</p><a className="text-link" href={`${whatsapp}?text=${encodeURIComponent('Olá! Gostaria de consultar a entrega da Valentina para o meu CEP.')}`} target="_blank" rel="noopener noreferrer" data-magnetic>Consultar entrega para meu CEP <ArrowUpRight size={19} /></a></div></section></>;
+  return <section className="visit-store" id="loja" aria-labelledby="visit-title">
+    <figure className="store-photo"><img src="/images/valentina-fachada.jpg" alt="Fachada e vitrine da Valentina Closet em Blumenau" loading="lazy" width="1280" height="960" /></figure>
+    <div className="visit-copy"><span className="section-label"><MapPin size={16} /> VENHA CONHECER A LOJA</span><h2 id="visit-title">A Valentina<br /><em>está perto de você.</em></h2><address>{store.street}<br />{store.cityStateCountry}</address><div className="visit-actions"><a className="button button-primary" href={store.maps} target="_blank" rel="noopener noreferrer">Como chegar <ArrowUpRight size={20} /></a><a className="text-link" href={whatsappLink('Olá! Gostaria de confirmar o horário de atendimento da Valentina para visitar a loja.')} target="_blank" rel="noopener noreferrer">Confirmar horário <MessageCircle size={18} /></a></div><p className="cta-note">Está longe? Enviamos para todo o Brasil. <a href={whatsappLink('Olá! Gostaria de consultar a entrega da Valentina para o meu CEP.')} target="_blank" rel="noopener noreferrer">Consulte a entrega.</a></p></div>
+  </section>;
 }
